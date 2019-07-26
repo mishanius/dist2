@@ -19,11 +19,17 @@ public class StepOneMapper extends Mapper<LongWritable, Text, BigramKey, IntWrit
         int decade = Integer.parseInt(year.substring(0, year.length()-1)+"0");
         String occurrences = tokens.nextToken();
         String[] wordArr = words.split(SPACE);
-        try {
-            context.write(new BigramKey(decade, wordArr[0]), new IntWritable(Integer.parseInt(occurrences)));
-            context.write(new BigramKey(decade, wordArr[0], wordArr[1]), new IntWritable(Integer.parseInt(occurrences)));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(isAlpha(words)) {
+            try {
+                context.write(new BigramKey(decade, wordArr[0]), new IntWritable(Integer.parseInt(occurrences)));
+                context.write(new BigramKey(decade, wordArr[0], wordArr[1]), new IntWritable(Integer.parseInt(occurrences)));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private boolean isAlpha(String s) {
+        return s != null && s.chars().allMatch(ch-> (Character.isAlphabetic(ch)||ch==' '|| ch=='\t')&& ch!='_');
     }
 }

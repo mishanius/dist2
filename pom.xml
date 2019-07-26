@@ -25,20 +25,6 @@
         <module>MapReduceJob</module>
     </modules>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-emr -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-emr</artifactId>
-            <version>1.11.596</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-emr -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-emr</artifactId>
-            <version>1.11.596</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/a    rtifact/org.apache.hadoop/hadoop-mapreduce-client-core -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>

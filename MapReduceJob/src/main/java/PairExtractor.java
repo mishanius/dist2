@@ -1,4 +1,7 @@
 import myconstants.Constants;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -6,6 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -16,10 +20,12 @@ import steptwo.SteptwoPartitioner;
 import utils.BigramKey;
 
 public class PairExtractor {
+    private static final Log logger = LogFactory.getLog(PairExtractor.class);
     private static Job job;
     private static Job job2;
     private static Job job3;
     public static void main(String[] args) throws Exception {
+        logger.info(String.format("PairExtractor has started args are:%s, %s",args[1], args[2]));
         Configuration conf = new Configuration();
         job = Job.getInstance(conf, Constants.STEP_ONE);
         job.setJarByClass(PairExtractor.class);
@@ -30,7 +36,7 @@ public class PairExtractor {
         job.setReducerClass(StepOneReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(BigramKey.class);
-        job.setInputFormatClass(TextInputFormat.class);
+        job.setInputFormatClass(SequenceFileInputFormat.class);
         FileInputFormat.setInputPaths(job,new Path(Constants.STEP_ONE_INPUT));
         job.setOutputFormatClass(TextOutputFormat.class);
         FileOutputFormat.setOutputPath(job, new Path(Constants.STEP_ONE_OUTPUT));
@@ -38,7 +44,7 @@ public class PairExtractor {
         if (!job.waitForCompletion(true)) {
             System.exit(1);
         }
-
+        logger.info("Job 1 is completed");
         job2 = Job.getInstance(conf, Constants.STEP_TWO);
         job.getCounters().getGroup("decades").forEach(PairExtractor::setConfig);
         job2.setJarByClass(PairExtractor.class);
@@ -50,15 +56,17 @@ public class PairExtractor {
         job2.setOutputKeyClass(Text.class);
         job2.setOutputValueClass(BigramKey.class);
         job2.setInputFormatClass(TextInputFormat.class);
+        job2.setNumReduceTasks(4);
         FileInputFormat.setInputPaths(job2,new Path(Constants.STEP_TWO_INPUT));
         job2.setOutputFormatClass(TextOutputFormat.class);
         FileOutputFormat.setOutputPath(job2, new Path(Constants.STEP_TWO_OUTPUT));
         if (!job2.waitForCompletion(true)) {
             System.exit(1);
         }
+        logger.info("Job 2 is completed");
         job3 = Job.getInstance(conf, Constants.STEP_TWO);
-        job3.getConfiguration().set(Constants.RELATIVE_PMI,"0.9");
-        job3.getConfiguration().set(Constants.MIN_PMI,"0.9");
+        job3.getConfiguration().set(Constants.MIN_PMI,args[1]);
+        job3.getConfiguration().set(Constants.RELATIVE_PMI,args[2]);
         job2.getCounters().getGroup("rnpmi").forEach(PairExtractor::setConfigRpmi);
         job3.setJarByClass(PairExtractor.class);
         job3.setMapperClass(StepThreeMapper.class);
