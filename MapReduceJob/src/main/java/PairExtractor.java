@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import stepthree.FinalBigramKey;
 import stepthree.StepThreeMapper;
 import steptwo.StepTwoMapper;
 import steptwo.StepTwoReducer;
@@ -70,7 +71,7 @@ public class PairExtractor {
         job2.getCounters().getGroup("rnpmi").forEach(PairExtractor::setConfigRpmi);
         job3.setJarByClass(PairExtractor.class);
         job3.setMapperClass(StepThreeMapper.class);
-        job3.setMapOutputKeyClass(Text.class);
+        job3.setMapOutputKeyClass(FinalBigramKey.class);
         job3.setMapOutputValueClass(Text.class);
         job3.setOutputKeyClass(Text.class);
         job3.setOutputValueClass(Text.class);
