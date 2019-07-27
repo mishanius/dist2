@@ -1,3 +1,5 @@
+#Distrebuted Systems - Assignment 2
+314012006, 310014055
 # Usage
 1. Create folders in S3 and update Constants.java:
     - create /public/ass2 folders set ASS2ROOT acordingly
