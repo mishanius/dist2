@@ -1,3 +1,7 @@
+# Usage
+```
+compile the modules in the project to get  
+```
 # Bad Examples
 1. Califor nia (spalling mistake)
 2. AMITAI ETZIONI (other language and name)
