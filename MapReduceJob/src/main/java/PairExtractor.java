@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import stepthree.FinalBigramKey;
 import stepthree.StepThreeMapper;
+import stepthree.StepThreeReducer;
 import steptwo.StepTwoMapper;
 import steptwo.StepTwoReducer;
 import steptwo.SteptwoPartitioner;
@@ -31,6 +32,7 @@ public class PairExtractor {
         job = Job.getInstance(conf, Constants.STEP_ONE);
         job.setJarByClass(PairExtractor.class);
         job.setMapperClass(StepOneMapper.class);
+        job.setCombinerClass(StepOneCombiner.class);
         job.setPartitionerClass(StepOnePartitioner.class);
         job.setMapOutputKeyClass(BigramKey.class);
         job.setMapOutputValueClass(IntWritable.class);
@@ -41,7 +43,6 @@ public class PairExtractor {
         FileInputFormat.setInputPaths(job,new Path(Constants.STEP_ONE_INPUT));
         job.setOutputFormatClass(TextOutputFormat.class);
         FileOutputFormat.setOutputPath(job, new Path(Constants.STEP_ONE_OUTPUT));
-
         if (!job.waitForCompletion(true)) {
             System.exit(1);
         }
@@ -50,6 +51,7 @@ public class PairExtractor {
         job.getCounters().getGroup("decades").forEach(PairExtractor::setConfig);
         job2.setJarByClass(PairExtractor.class);
         job2.setMapperClass(StepTwoMapper.class);
+        job2.setCombinerClass(StepOneCombiner.class);
         job2.setPartitionerClass(SteptwoPartitioner.class);
         job2.setMapOutputKeyClass(BigramKey.class);
         job2.setMapOutputValueClass(IntWritable.class);
@@ -57,7 +59,6 @@ public class PairExtractor {
         job2.setOutputKeyClass(Text.class);
         job2.setOutputValueClass(BigramKey.class);
         job2.setInputFormatClass(TextInputFormat.class);
-        job2.setNumReduceTasks(4);
         FileInputFormat.setInputPaths(job2,new Path(Constants.STEP_TWO_INPUT));
         job2.setOutputFormatClass(TextOutputFormat.class);
         FileOutputFormat.setOutputPath(job2, new Path(Constants.STEP_TWO_OUTPUT));
@@ -71,6 +72,8 @@ public class PairExtractor {
         job2.getCounters().getGroup("rnpmi").forEach(PairExtractor::setConfigRpmi);
         job3.setJarByClass(PairExtractor.class);
         job3.setMapperClass(StepThreeMapper.class);
+        job3.setReducerClass(StepThreeReducer.class);
+        job3.setNumReduceTasks(1);
         job3.setMapOutputKeyClass(FinalBigramKey.class);
         job3.setMapOutputValueClass(Text.class);
         job3.setOutputKeyClass(Text.class);
