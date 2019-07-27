@@ -1,6 +1,16 @@
 # Usage
+1. Create folders in S3 and update Constants.java:
+    - create /public/ass2 folders set ASS2ROOT acordingly
+    - create jars folder 
+    - create logs folder
+2. create the following roles in IAM : 
+    - EMR_DefaultRole: with AmazonElasticMapReduceRole policy
+    - EMR_EC2_DefaultRole: with AmazonElasticMapReduceforEC2Role  policy
+3. compile the modules in the project to get MapReduceJob.jar and StartEmrJob.jar
+4. upload MapReduceJob.jar to your jars folder in S3
+  ## To run the cluster
 ```
-compile the modules in the project to get  
+    java -jar StartEmrJob PairExtractor <npmi threshold> <rnpmi threshold>
 ```
 # Bad Examples
 1. Califor nia (spalling mistake)
