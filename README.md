@@ -1,4 +1,4 @@
-#Distrebuted Systems - Assignment 2
+# Distrebuted Systems - Assignment 2
 314012006, 310014055
 # Usage
 1. Create folders in S3 and update Constants.java:
