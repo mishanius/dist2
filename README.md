@@ -20,7 +20,7 @@
 5. Russkaia mysl (other language)
 6. chek mat (spelling mistake)
 7. CATAL HUYUK
-8.Yesh Gvul (other language)
+8. Yesh Gvul (other language)
 9. COOMe COOMe
 10. Yosefa Loshitzky
 11. Oneg Shabat
